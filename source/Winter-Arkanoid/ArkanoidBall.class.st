@@ -29,18 +29,29 @@ ArkanoidBall class >> representedWith: aSprite [
 	^ self new initializeRepresendtadWith: aSprite
 ]
 
+{ #category : #Updating }
+ArkanoidBall >> checkCollisions [
+
+	( self position x between: 0 and: 550 )
+		ifTrue: [ "Inside boundaries" ]
+		ifFalse: [ self negateX ].
+	self position y <= 0
+		ifTrue: [ self negateY ]
+		ifFalse: [ "Inside boundaries" ]
+]
+
 { #category : #Initialization }
 ArkanoidBall >> initialize [
 
 	super initialize.
-	deltaPoint := 10 @ 10 negated
+	deltaPoint := 10 @ 10 negated 
 ]
 
 { #category : #Initialization }
 ArkanoidBall >> initializeCollisionShape [
 
 	collisionShape := Circle 
-		ofCenter: 250 @ 530
+		ofCenter: 250 @ 500
 		radius: 15
 		color: Color red
 ]
@@ -63,15 +74,9 @@ ArkanoidBall >> negateY [
 	deltaPoint := deltaPoint x  @ deltaPoint y negated
 ]
 
-{ #category : #Reset }
-ArkanoidBall >> resetPosition [
-
-	self initialize.
-]
-
 { #category : #Updating }
 ArkanoidBall >> update [
 
 	super update.
-	collisionShape position: collisionShape position + deltaPoint
+	collisionShape position: collisionShape position + deltaPoint.
 ]

@@ -31,12 +31,6 @@ SpiderInvasionPlayer class >> on: aGame [
 	^ self new initializeOn: aGame
 ]
 
-{ #category : #Collisions }
-SpiderInvasionPlayer >> checkCollisions [
-
-	CollisionChecker new checkFor: self and: game onAxis: #x
-]
-
 { #category : #actions }
 SpiderInvasionPlayer >> fire [
 
@@ -45,7 +39,7 @@ SpiderInvasionPlayer >> fire [
 
 			loaded := false.
 			missilePos := self position - ( 0 @ 1 ).
-			scene addComponent: ( SpiderInvasionMissile atPosition: missilePos of: game tick: 5 )
+			game addActor: ( SpiderInvasionMissile atPosition: missilePos of: game tick: 5 )
 			]
 ]
 
@@ -79,8 +73,8 @@ SpiderInvasionPlayer >> moveLeft [
 SpiderInvasionPlayer >> moveRight [
 
 	| newX |
-	self flag: 'Revisar el min'.
-	newX := (self positionX + 24 )  min: 336.
+
+	newX := self positionX + 24 min: 336.
 	collisionShape position: newX @ self positionY
 ]
 

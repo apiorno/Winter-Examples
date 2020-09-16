@@ -54,6 +54,12 @@ WBAWallDescriptor >> loadSpritesWith: surface using: anAssetsManagementSystem [
 ]
 
 { #category : #Bootstrap }
+WBAWallDescriptor >> resourceFolder [
+
+	^ 'resources/wba'
+]
+
+{ #category : #Bootstrap }
 WBAWallDescriptor >> spriteSize [
 	^ 48 @ 64
 ]

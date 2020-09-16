@@ -19,7 +19,7 @@ Class {
 { #category : #Actions }
 SpiderInvasionItem >> die [
 
-	game removeActor: self
+	game addForRemoval: self
 ]
 
 { #category : #Testing }

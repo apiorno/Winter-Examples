@@ -53,7 +53,7 @@ WBANumberPlayerSelectScreenModel >> initialize [
 	super initialize.
 
 	currentChoice := 1.
-	startingGame := WBAGame new.
+	startingGame := WBA new.
 ]
 
 { #category : #initialization }
