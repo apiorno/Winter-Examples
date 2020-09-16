@@ -126,7 +126,6 @@ WBA >> scheduler [
 { #category : #initialization }
 WBA >> start [
 
-	super start.
 	scheduler  startProcess
 	
 ]

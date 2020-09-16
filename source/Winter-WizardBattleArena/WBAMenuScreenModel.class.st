@@ -27,7 +27,6 @@ WBAMenuScreenModel >> eventHandler [
 
 	handler := BasicEventHandler of: game.
 	handler registerObserver: self.
-
 	^ handler
 ]
 

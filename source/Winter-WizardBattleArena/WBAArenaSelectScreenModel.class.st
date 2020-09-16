@@ -88,9 +88,8 @@ WBAArenaSelectScreenModel >> renderWidgetsOn: canvas [
 
 { #category : #actions }
 WBAArenaSelectScreenModel >> switchToNextScreen [
-	WBAArenaBootstrap new 
-		bootstrapGame: game 
-		on: screen
+
+	WBAArenaBootstrap new bootstrapGame: game on: screen
 ]
 
 { #category : #actions }
