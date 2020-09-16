@@ -66,7 +66,7 @@ WBA >> endScreen: winner [
 
 	WBAEndScreenModel new
 		screen: screen;
-		startingGame: self;
+		game: self;
 		winner: winner;
 		display
 ]

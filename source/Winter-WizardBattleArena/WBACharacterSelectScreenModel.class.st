@@ -20,7 +20,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WBACharacterSelectScreenModel,
-	#superclass : #WinterMenuScreenModel,
+	#superclass : #WBAMenuScreenModel,
 	#instVars : [
 		'currentChoices',
 		'titleWidget',
@@ -47,7 +47,7 @@ WBACharacterSelectScreenModel >> characterWidgets: cood [
 			sprites := WBACharacterDescriptor new
 				fileName: 'perso' , i printString;
 				position: cood;
-				loadShortSpritesWith: screen surface using: startingGame assetsManager.
+				loadShortSpritesWith: screen surface using: game assetsManager.
 			self newAnimatedWidget: sprites
 			]
 ]
@@ -55,9 +55,9 @@ WBACharacterSelectScreenModel >> characterWidgets: cood [
 { #category : #actions }
 WBACharacterSelectScreenModel >> endScreenComputation [
 
-	startingGame gameDescriptor
+	game gameDescriptor
 		characterDescriptors:
-			( ( 1 to: startingGame players size )
+			( ( 1 to: game players size )
 				collect: [ :i | 
 					WBACharacterDescriptor new
 						fileName: 'perso' , ( ( currentChoices at: i ) x + 1 ) printString;
@@ -100,7 +100,7 @@ WBACharacterSelectScreenModel >> loadWidgets [
 
 	titleWidget := self newSelectWidget: ( self textWidgetAt: #character ).
 	characterWidget := self newCharacterWidget.
-	numPlayers := startingGame players size.
+	numPlayers := game players size.
 	arrowWidgets := self newCadreWidgets: numPlayers.
 	currentChoices := {( 0 @ 0 ).
 	( 2 @ 2 ).

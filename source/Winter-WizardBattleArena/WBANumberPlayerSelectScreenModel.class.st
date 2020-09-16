@@ -22,7 +22,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WBANumberPlayerSelectScreenModel,
-	#superclass : #WinterMenuScreenModel,
+	#superclass : #WBAMenuScreenModel,
 	#instVars : [
 		'currentChoice',
 		'arrowWidget',
@@ -42,7 +42,7 @@ WBANumberPlayerSelectScreenModel >> downSelection [
 WBANumberPlayerSelectScreenModel >> endScreenComputation [
 	| keyCodes |
 	keyCodes := WBAPlayer defaultKeyboardCodes.
-	startingGame players: ((1 to: currentChoice + 1) collect: [ :i | WBAPlayer new
+	game players: ((1 to: currentChoice + 1) collect: [ :i | WBAPlayer new
 			keyboards: (keyCodes at: i);
 			yourself ])
 ]
@@ -53,7 +53,7 @@ WBANumberPlayerSelectScreenModel >> initialize [
 	super initialize.
 
 	currentChoice := 1.
-	startingGame := WBA new.
+	game := WBA new.
 ]
 
 { #category : #initialization }
@@ -80,14 +80,14 @@ WBANumberPlayerSelectScreenModel >> renderWidgetsOn: canvas [
 { #category : #accessing }
 WBANumberPlayerSelectScreenModel >> screen: sc [
 	super screen: sc.
-	startingGame screen: screen.
+	game screen: screen.
 ]
 
 { #category : #accessing }
 WBANumberPlayerSelectScreenModel >> setUpGame [
 
-	startingGame screen: screen.
-	screen rootSystem: startingGame rootSystem.
+	game screen: screen.
+	screen rootSystem: game rootSystem.
 ]
 
 { #category : #actions }

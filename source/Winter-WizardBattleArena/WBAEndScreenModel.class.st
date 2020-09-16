@@ -24,7 +24,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WBAEndScreenModel,
-	#superclass : #WinterMenuScreenModel,
+	#superclass : #WBAMenuScreenModel,
 	#instVars : [
 		'currentChoice',
 		'winner',
@@ -90,13 +90,12 @@ WBAEndScreenModel >> startAnimation [
 
 { #category : #actions }
 WBAEndScreenModel >> switchToNextScreen [
-	currentChoice = 0 
+
+	currentChoice = 0
 		ifTrue: [ self nextScreen: WBAArenaSelectScreenModel ]
-		ifFalse: [ 
-			startingGame scheduler terminateProcess.
-			WBANumberPlayerSelectScreenModel new
-				screen: screen;
-				display ]
+		ifFalse: [ game scheduler terminateProcess.
+			self nextScreen: WBANumberPlayerSelectScreenModel
+			]
 ]
 
 { #category : #actions }
