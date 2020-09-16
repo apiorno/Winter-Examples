@@ -54,6 +54,12 @@ WBATextDescriptor >> loadSpritesWith: aSurface using: anAssetsManagementSystem [
 ]
 
 { #category : #Bootstrap }
+WBATextDescriptor >> resourceFolder [
+
+	^ 'resources/wba'
+]
+
+{ #category : #Bootstrap }
 WBATextDescriptor >> spriteSize [
 
 	^ 32 @ 48

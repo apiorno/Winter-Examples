@@ -33,6 +33,12 @@ WBASpellExplodeDescriptor >> loadSpritesWith: surface using: anAssetsManagementS
 ]
 
 { #category : #Bootstrap }
+WBASpellExplodeDescriptor >> resourceFolder [
+
+	^ 'resources/wba'
+]
+
+{ #category : #Bootstrap }
 WBASpellExplodeDescriptor >> spriteSize [
 
 	^ 32 @ 48

@@ -23,7 +23,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WBASeasonSelectScreenModel,
-	#superclass : #WinterMenuScreenModel,
+	#superclass : #WBAMenuScreenModel,
 	#instVars : [
 		'currentChoice',
 		'titleWidget',
@@ -39,8 +39,8 @@ WBASeasonSelectScreenModel >> endScreenComputation [
 	| gameDescriptor |
 
 	gameDescriptor := WBAGameDescriptor
-		perform: ('demo' , startingGame players size printString) asSymbol.
-	startingGame gameDescriptor: gameDescriptor.
+		perform: ('demo' , game players size printString) asSymbol.
+	game gameDescriptor: gameDescriptor.
 	gameDescriptor
 		groundDescriptor: (WBAGroundDescriptor backgroundAt: currentChoice);
 		wallDescriptor: (WBAWallDescriptor backgroundAt: currentChoice)
@@ -124,8 +124,8 @@ WBASeasonSelectScreenModel >> seasonSubWidgets: aNumber [
 
 	groundDescriptor := WBAGroundDescriptor backgroundAt: aNumber.
 	wallDescriptor := WBAWallDescriptor backgroundAt: aNumber.
-	grounds := groundDescriptor loadSpritesWith: screen surface using: startingGame assetsManager.
-	walls := wallDescriptor loadSpritesWith: screen surface using: startingGame assetsManager.
+	grounds := groundDescriptor loadSpritesWith: screen surface using: game assetsManager.
+	walls := wallDescriptor loadSpritesWith: screen surface using: game assetsManager.
 	basicGroundWidget := self newSeasonSubWidget: {grounds first}.
 	^ {( self
 		newSeasonSubWidget:

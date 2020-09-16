@@ -42,7 +42,7 @@ SpiderInvasionSpider >> checkCollisions [
 { #category : #Actions }
 SpiderInvasionSpider >> die [
 
-	scene newRandomSpiderTicked: ( tick - 1 max: 8 ).
+	game newRandomSpiderTicked: ( tick - 1 max: 8 ).
 	super die
 ]
 

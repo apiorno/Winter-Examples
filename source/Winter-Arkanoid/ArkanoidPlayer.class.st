@@ -50,7 +50,7 @@ ArkanoidPlayer >> moveRight [
 
 	| newX |
 
-	newX := self positionX + 10 min: 626.
+	newX := self positionX + 10 min: 500.
 	collisionShape position: newX @ self positionY
 ]
 

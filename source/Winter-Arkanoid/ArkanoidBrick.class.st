@@ -67,7 +67,8 @@ ArkanoidBrick >> changeColorStateTo: anArkanoidColorState [
 { #category : #Collisions }
 ArkanoidBrick >> collidedByBallIn: aGame [
 
-	colorState affectCollisionWithBallTo: self in: aGame
+	colorState affectCollisionWithBallTo: self in: aGame.
+	
 ]
 
 { #category : #Initialization }

@@ -24,7 +24,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WBASpellSelectScreenModel,
-	#superclass : #WinterMenuScreenModel,
+	#superclass : #WBAMenuScreenModel,
 	#instVars : [
 		'currentChoices',
 		'titleWidget',
@@ -36,7 +36,7 @@ Class {
 
 { #category : #actions }
 WBASpellSelectScreenModel >> endScreenComputation [
-	startingGame gameDescriptor spellDescriptors: ((1 to: startingGame players size) collect: [ :i | 
+	game gameDescriptor spellDescriptors: ((1 to: game players size) collect: [ :i | 
 		WBASpellDescriptor new
 			fileName: 'spell' , ((currentChoices at: i) + 1) printString;
 			yourself]).
@@ -63,7 +63,7 @@ WBASpellSelectScreenModel >> loadSpellSprites [
 		collect: [ :i | 
 			WBASpellExplodeDescriptor new
 				fileName: 'spell' , i printString;
-				loadSpritesWith: screen surface using: startingGame assetsManager
+				loadSpritesWith: screen surface using: game assetsManager
 			]
 ]
 
@@ -71,7 +71,7 @@ WBASpellSelectScreenModel >> loadSpellSprites [
 WBASpellSelectScreenModel >> loadWidgets [
 	| numPlayers |
 	titleWidget := self newSelectWidget: (self textWidgetAt: #spell).
-	numPlayers := startingGame players size.
+	numPlayers := game players size.
 	spellWidgets := self newSpellWidgets: numPlayers.
 	arrowWidgets := self newCadreWidgets: numPlayers.
 	currentChoices :=  #(0 1 2 3) copyFrom: 1 to: numPlayers.
@@ -106,5 +106,6 @@ WBASpellSelectScreenModel >> startAnimation [
 
 { #category : #actions }
 WBASpellSelectScreenModel >> switchToNextScreen [
-	self nextScreen: WBAArenaSelectScreenModel 
+
+	self nextScreen: WBAArenaSelectScreenModel
 ]

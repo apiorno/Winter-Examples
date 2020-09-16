@@ -21,7 +21,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WBAArenaSelectScreenModel,
-	#superclass : #WinterMenuScreenModel,
+	#superclass : #WBAMenuScreenModel,
 	#instVars : [
 		'currentChoice',
 		'titleWidget',
@@ -39,7 +39,7 @@ WBAArenaSelectScreenModel >> downSelection [
 
 { #category : #actions }
 WBAArenaSelectScreenModel >> endScreenComputation [
-	startingGame gameDescriptor arenaDescriptor: (WBAArenaDescriptor perform: (arenas at: currentChoice)).
+	game gameDescriptor arenaDescriptor: (WBAArenaDescriptor perform: (arenas at: currentChoice)).
 ]
 
 { #category : #'event handling' }
@@ -58,7 +58,7 @@ WBAArenaSelectScreenModel >> initialize [
 { #category : #initialization }
 WBAArenaSelectScreenModel >> loadWidgets [
 	titleWidget := self newSelectWidget: (self textWidgetAt: #arena).
-	arenas := WBAArenaDescriptor perform: ('available' , startingGame players size printString, 'Players') asSymbol.
+	arenas := WBAArenaDescriptor perform: ('available' , game players size printString, 'Players') asSymbol.
 	arenaWidget := self newArenaWidget: self numArenas.
 	arrowWidget := self newLargeArrowSelectWidget: 300.
 ]
@@ -88,9 +88,8 @@ WBAArenaSelectScreenModel >> renderWidgetsOn: canvas [
 
 { #category : #actions }
 WBAArenaSelectScreenModel >> switchToNextScreen [
-	WBAArenaBootstrap new 
-		bootstrapGame: startingGame 
-		on: screen
+
+	WBAArenaBootstrap new bootstrapGame: game on: screen
 ]
 
 { #category : #actions }

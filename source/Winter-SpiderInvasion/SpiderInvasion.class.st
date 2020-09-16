@@ -11,55 +11,62 @@ Public API and Key Messages:
 
 "
 Class {
-	#name : #SpiderInvasionGame,
+	#name : #SpiderInvasion,
 	#superclass : #Game,
 	#instVars : [
 		'player',
 		'assetsManager',
 		'collisionHandlers',
-		'actors'
+		'actors',
+		'actorsToRemove'
 	],
 	#category : #'Winter-SpiderInvasion'
 }
 
 { #category : #Running }
-SpiderInvasionGame class >> start [
+SpiderInvasion class >> start [
 
 	^ self new start
 ]
 
 { #category : #accessing }
-SpiderInvasionGame >> actors [
+SpiderInvasion >> actors [
 
 	^ actors
 ]
 
-{ #category : #adding }
-SpiderInvasionGame >> addActor: anActor [
+{ #category : #managing }
+SpiderInvasion >> addActor: anActor [
 
 	actors add: anActor
 ]
 
+{ #category : #managing }
+SpiderInvasion >> addForRemoval: anActor [
+
+	actorsToRemove add: anActor
+]
+
 { #category : #accessing }
-SpiderInvasionGame >> assetsManager [
+SpiderInvasion >> assetsManager [
 
 	^ assetsManager
 ]
 
-{ #category : #Accessing }
-SpiderInvasionGame >> background [
+{ #category : #accessing }
+SpiderInvasion >> background [
 
 	^ Color black
 ]
 
-{ #category : #Accessing }
-SpiderInvasionGame >> dimensions [
+{ #category : #accessing }
+SpiderInvasion >> dimensions [
 
 	^ self gameSize * self spriteSize
 ]
 
-{ #category : #Accessing }
-SpiderInvasionGame >> eventHandler [
+{ #category : #accessing }
+SpiderInvasion >> eventHandler [
 
 	| handler |
 
@@ -68,25 +75,33 @@ SpiderInvasionGame >> eventHandler [
 	^ handler
 ]
 
-{ #category : #Accessing }
-SpiderInvasionGame >> gameSize [
+{ #category : #accessing }
+SpiderInvasion >> gameSize [
 
 	^ 8 @ 14
 ]
 
+{ #category : #processing }
+SpiderInvasion >> handleCollision: aCollision [
+
+	collisionHandlers do: [ :handler | handler handle: aCollision ]
+]
+
 { #category : #initialization }
-SpiderInvasionGame >> initialize [
+SpiderInvasion >> initialize [
 
 	super initialize.
 	self
 		initializeResources;
 		initializePlayer;
 		initializeCollisionHandlers;
-		initializeActors
+		initializeActors.
+
+	actorsToRemove := OrderedCollection new
 ]
 
 { #category : #initialization }
-SpiderInvasionGame >> initializeActors [
+SpiderInvasion >> initializeActors [
 
 	actors := OrderedCollection new.
 	self initializeWalls.
@@ -94,7 +109,7 @@ SpiderInvasionGame >> initializeActors [
 ]
 
 { #category : #initialization }
-SpiderInvasionGame >> initializeCollisionHandlers [
+SpiderInvasion >> initializeCollisionHandlers [
 
 	collisionHandlers := OrderedCollection new.
 	collisionHandlers
@@ -129,7 +144,7 @@ SpiderInvasionGame >> initializeCollisionHandlers [
 ]
 
 { #category : #initialization }
-SpiderInvasionGame >> initializePlayer [
+SpiderInvasion >> initializePlayer [
 
 	player := SpiderInvasionPlayer on: self.
 
@@ -140,19 +155,19 @@ SpiderInvasionGame >> initializePlayer [
 ]
 
 { #category : #initialization }
-SpiderInvasionGame >> initializeResources [
+SpiderInvasion >> initializeResources [
 
 	assetsManager := AssetsManager new.
 	assetsManager
-		addSprite: 'resources/spider.png' named: #spider;
-		addSprite: 'resources/wall.png' named: #wall;
-		addSprite: 'resources/missile.png' named: #missile;
-		addSprite: 'resources/explode.png' named: #explode;
-		addSprite: 'resources/spaceShip.png' named: #spaceShip
+		addSprite: 'resources/spaceInvaders/spider.png' named: #spider;
+		addSprite: 'resources/spaceInvaders/wall.png' named: #wall;
+		addSprite: 'resources/spaceInvaders/missile.png' named: #missile;
+		addSprite: 'resources/spaceInvaders/explode.png' named: #explode;
+		addSprite: 'resources/spaceInvaders/spaceShip.png' named: #spaceShip
 ]
 
 { #category : #initialization }
-SpiderInvasionGame >> initializeSpiders [
+SpiderInvasion >> initializeSpiders [
 
 	"Only half of the boxes in the first row contain a spider at the start of the game."
 	1 to: self maxX // 2 do: [ :i |
@@ -160,7 +175,7 @@ SpiderInvasionGame >> initializeSpiders [
 ]
 
 { #category : #initialization }
-SpiderInvasionGame >> initializeWalls [
+SpiderInvasion >> initializeWalls [
 
 	self
 		withIndexItemsDo: [ :x :y | 
@@ -172,19 +187,19 @@ SpiderInvasionGame >> initializeWalls [
 ]
 
 { #category : #testing }
-SpiderInvasionGame >> isOccupiedAt: aPosition [
+SpiderInvasion >> isOccupiedAt: aPosition [
 
 	^ self actors anySatisfy: [ :actor | actor position = aPosition ]
 ]
 
 { #category : #testing }
-SpiderInvasionGame >> isValidPosition: aPosition [
+SpiderInvasion >> isValidPosition: aPosition [
 
 	^ self minX @ self minY <= aPosition and: [ aPosition <= ( self maxX @ self maxY ) ]
 ]
 
 { #category : #processing }
-SpiderInvasionGame >> lostGame [
+SpiderInvasion >> lostGame [
 
 	actors := OrderedCollection new.
 	self
@@ -195,31 +210,31 @@ SpiderInvasionGame >> lostGame [
 ]
 
 { #category : #private }
-SpiderInvasionGame >> maxX [
+SpiderInvasion >> maxX [
 
 	^ 8
 ]
 
 { #category : #private }
-SpiderInvasionGame >> maxY [
+SpiderInvasion >> maxY [
 
 	^ 14
 ]
 
 { #category : #private }
-SpiderInvasionGame >> minX [
+SpiderInvasion >> minX [
 
 	^ 1
 ]
 
 { #category : #private }
-SpiderInvasionGame >> minY [
+SpiderInvasion >> minY [
 
 	^ 1
 ]
 
 { #category : #private }
-SpiderInvasionGame >> newRandomSpiderTicked: numTick [
+SpiderInvasion >> newRandomSpiderTicked: numTick [
 
 	| randomX spider |
 
@@ -231,53 +246,63 @@ SpiderInvasionGame >> newRandomSpiderTicked: numTick [
 ]
 
 { #category : #private }
-SpiderInvasionGame >> randomX [
+SpiderInvasion >> randomX [
 
 	^ self maxX atRandom - 1 + self minX
 ]
 
-{ #category : #adding }
-SpiderInvasionGame >> removeActor: anActor [
+{ #category : #managing }
+SpiderInvasion >> removeActor: anActor [
 
 	actors remove: anActor
 ]
 
+{ #category : #managing }
+SpiderInvasion >> removeActorPendingForRemoval [
+
+	actorsToRemove do: [ :actor | self removeActor: actor ]
+]
+
 { #category : #rendering }
-SpiderInvasionGame >> renderBackgroundOn: aCanvas [
+SpiderInvasion >> renderBackgroundOn: aCanvas [
 
 	aCanvas setPaint: self background.
 	aCanvas drawShape: ( 0 @ 0 fastCorner: aCanvas surface extent )
 ]
 
 { #category : #rendering }
-SpiderInvasionGame >> renderOn: aCanvas [
+SpiderInvasion >> renderOn: aCanvas [
 
 	self renderBackgroundOn: aCanvas.
 	player renderOn: aCanvas.
 	player update.
 
-	actors
+	[ actors
 		do: [ :actor | 
 			actor
 				renderOn: aCanvas;
 				update
 			]
+	]
+		on: CollisionOcurred
+		do: [ :collision | self handleCollision: collision ].
+	self removeActorPendingForRemoval
 ]
 
-{ #category : #Accessing }
-SpiderInvasionGame >> spriteSize [
+{ #category : #accessing }
+SpiderInvasion >> spriteSize [
 
 	^ 48@48
 ]
 
-{ #category : #Accessing }
-SpiderInvasionGame >> title [
+{ #category : #accessing }
+SpiderInvasion >> title [
 
 	^'Spider Invasion'
 ]
 
 { #category : #private }
-SpiderInvasionGame >> withIndexItemsDo: aBlock [
+SpiderInvasion >> withIndexItemsDo: aBlock [
 
 	self minY to: self maxY do: [ :j | self minX to: self maxX do: [ :i | aBlock value: i value: j ] ]
 ]

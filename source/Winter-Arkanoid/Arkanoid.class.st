@@ -13,7 +13,7 @@ Public API and Key Messages:
 - resetPlayerAndBall:
 "
 Class {
-	#name : #ArkanoidGame,
+	#name : #Arkanoid,
 	#superclass : #Game,
 	#instVars : [
 		'playing',
@@ -21,42 +21,56 @@ Class {
 		'player',
 		'assetManager',
 		'actors',
-		'ball'
+		'ball',
+		'checker',
+		'actorsToRemove'
 	],
 	#category : #'Winter-Arkanoid'
 }
 
+{ #category : #removing }
+Arkanoid >> addForRemoval: anActor [
+
+	actorsToRemove add: anActor
+]
+
 { #category : #Collisions }
-ArkanoidGame >> checkEndGame [
+Arkanoid >> checkEndGame [
 
 	ball position y > self screen extentY
 		ifTrue: [ self reset ]
 ]
 
 { #category : #Accessing }
-ArkanoidGame >> dimensions [
+Arkanoid >> dimensions [
 
 	^ 650 @ 700
 ]
 
 { #category : #Accessing }
-ArkanoidGame >> eventHandler [
+Arkanoid >> eventHandler [
 
 	| handler |
 
 	handler := BasicEventHandler of: self.
-	"handler registerObserver: ( engine systemOfType: ArkanoidInputHandlerSystem )."
+	handler registerObserver: player.
 	^ handler
 ]
 
 { #category : #initialization }
-ArkanoidGame >> greenBrick [
+Arkanoid >> greenBrick [
 
 	^ assetManager assetNamed: #green
 ]
 
+{ #category : #Collisions }
+Arkanoid >> handleCollision: aCollision [
+
+	collisionHandlers do: [ :handler | handler handle: aCollision ]
+]
+
 { #category : #initialization }
-ArkanoidGame >> initialize [
+Arkanoid >> initialize [
 
 	super initialize.
 	playing := false.
@@ -65,16 +79,15 @@ ArkanoidGame >> initialize [
 		initializeCollisionHandlers;
 		initializePlayer;
 		initializeActors.
-	ball := ArkanoidBall representedWith: ( assetManager assetNamed: #ball )
+	ball := ArkanoidBall representedWith: ( assetManager assetNamed: #ball ).
+	checker := CollisionChecker new.
+	actorsToRemove := OrderedCollection new.
 ]
 
 { #category : #initialization }
-ArkanoidGame >> initializeActors [
+Arkanoid >> initializeActors [
 
 	actors := OrderedCollection new
-		add: ( ArkanoidWall ofCenter: 0 @ 0 extent: 626 @ 0 andColor: Color white );
-		add: ( ArkanoidWall ofCenter: 0 @ 0 extent: 0 @ 600 andColor: Color white );
-		add: ( ArkanoidWall ofCenter: 600 @ 0 extent: 0 @ 600 andColor: Color white );
 		add: ( ArkanoidBrick yellowRepresentedWith: self yellowBrick on: 150 @ 150 ofExtent: 50 @ 25 );
 		add: ( ArkanoidBrick greenRepresentedWith: self greenBrick on: 210 @ 150 ofExtent: 50 @ 25 );
 		add: ( ArkanoidBrick redRepresentedWith: self redBrick on: 90 @ 150 ofExtent: 50 @ 25 );
@@ -82,20 +95,10 @@ ArkanoidGame >> initializeActors [
 ]
 
 { #category : #initialization }
-ArkanoidGame >> initializeCollisionHandlers [
+Arkanoid >> initializeCollisionHandlers [
 
 	collisionHandlers := OrderedCollection new.
 	collisionHandlers
-		add:
-			( CollisionHandler
-				between: ArkanoidBall
-				and: ArkanoidWall
-				onCollisionDo: [ :collision | 
-					collision secondComponent isHorizontal
-						ifTrue: [ collision firstComponent negateY ]
-						ifFalse: [ collision firstComponent negateX ].
-					collision firstComponent playCollisionSound
-					] );
 		add:
 			( CollisionHandler
 				between: ArkanoidBall
@@ -103,16 +106,7 @@ ArkanoidGame >> initializeCollisionHandlers [
 				onCollisionDo: [ :collision | 
 					collision secondComponent collidedByBallIn: self.
 					collision firstComponent negateY.
-					collision firstComponent playCollisionSound
-					] );
-		add:
-			( CollisionHandler
-				between: ArkanoidPlayer
-				and: WinterScreen
-				onCollisionDo: [ :collision | 
-					collision firstComponent positionX = 10 negated
-						ifTrue: [ collision firstComponent moveRight ]
-						ifFalse: [ collision firstComponent moveLeft ]
+					self playCollisionSound
 					] );
 		add:
 			( CollisionHandler
@@ -125,7 +119,7 @@ ArkanoidGame >> initializeCollisionHandlers [
 ]
 
 { #category : #initialization }
-ArkanoidGame >> initializePlayer [
+Arkanoid >> initializePlayer [
 
 	player := ArkanoidPlayer representedWith: (assetManager assetNamed: #arkanoidBar).
 
@@ -142,96 +136,121 @@ ArkanoidGame >> initializePlayer [
 ]
 
 { #category : #initialization }
-ArkanoidGame >> initializeResources [
+Arkanoid >> initializeResources [
 
 	assetManager := AssetsManager new.
 	assetManager
-		addSprite: 'arkanoid/background.png'
+		addSprite: 'resources/arkanoid/background.png'
 			named: #background
 			applying: [ :aForm | aForm scaledToSize: self dimensions ];
-		addSprite: 'arkanoid/yellow.png'
+		addSprite: 'resources/arkanoid/yellow.png'
 			named: #yellow
 			applying: [ :aForm | aForm scaledToSize: 38 @ 38 ];
-		addSprite: 'arkanoid/green.png' named: #green applying: [ :aForm | aForm scaledToSize: 38 @ 38 ];
-		addSprite: 'arkanoid/red.png' named: #red applying: [ :aForm | aForm scaledToSize: 38 @ 38 ];
-		addSprite: 'arkanoid/ball.png' named: #ball applying: [ :aForm | aForm scaledToSize: 38 @ 38 ];
-		addSprite: 'arkanoid/arkanoid_bar.png' named: #arkanoidBar	";
-		addSound: 'arkanoid/arkanoid_ball_collision.wav' named: #ballCollision"
+		addSprite: 'resources/arkanoid/green.png'
+			named: #green
+			applying: [ :aForm | aForm scaledToSize: 38 @ 38 ];
+		addSprite: 'resources/arkanoid/red.png'
+			named: #red
+			applying: [ :aForm | aForm scaledToSize: 38 @ 38 ];
+		addSprite: 'resources/arkanoid/ball.png'
+			named: #ball
+			applying: [ :aForm | aForm scaledToSize: 38 @ 38 ];
+		addSprite: 'resources/arkanoid/arkanoid_bar.png' named: #arkanoidBar";
+		addSound: 'resources/arkanoid/arkanoid_ball_collision.wav' named: #ballCollision"
 ]
 
 { #category : #Collisions }
-ArkanoidGame >> playCollisionSound [
+Arkanoid >> playCollisionSound [
 
-	( assetManager assetNamed: #ballCollision ) play
+	"Fix load of sound asset"
+
+	"( assetManager assetNamed: #ballCollision ) play"
+
+	
 ]
 
 { #category : #Accessing }
-ArkanoidGame >> player [
+Arkanoid >> player [
 
 	^player
 ]
 
 { #category : #initialization }
-ArkanoidGame >> redBrick [
+Arkanoid >> redBrick [
 
 	^ assetManager assetNamed: #red
 ]
 
 { #category : #removing }
-ArkanoidGame >> removeActor: anActor [
+Arkanoid >> removeActor: anActor [
 
 	actors remove: anActor ifAbsent: [  ]
 ]
 
+{ #category : #removing }
+Arkanoid >> removeActorPendingForRemoval [
+
+	actorsToRemove do: [ :actor | self removeActor: actor ]
+]
+
 { #category : #rendering }
-ArkanoidGame >> renderBackgroundOn: aCanvas [
+Arkanoid >> renderBackgroundOn: aCanvas [
 
 	aCanvas setPaint: ( assetManager assetNamed: #background ).
 	aCanvas drawShape: ( 0 @ 0 fastCorner: aCanvas surface extent )
 ]
 
 { #category : #rendering }
-ArkanoidGame >> renderOn: aCanvas [
-
-	| checker |
-
-	checker := CollisionChecker new.
+Arkanoid >> renderOn: aCanvas [
 
 	self renderBackgroundOn: aCanvas.
-	player renderOn: aCanvas.
-	ball renderOn: aCanvas.
 	playing
-		ifTrue: [ player update.
-			ball update
-			].
-	checker
-		checkFor: ball and: player;
-		checkFor: player and: self onAxis: #x.
-	actors
-		do: [ :actor | 
-			actor
+		ifTrue: [ player
 				renderOn: aCanvas;
 				update.
-			checker checkFor: ball and: actor
+			ball
+				renderOn: aCanvas;
+				update.
+			[ checker checkFor: ball and: player.
+			actors
+				do: [ :actor | 
+					actor
+						renderOn: aCanvas;
+						update.
+					checker checkFor: ball and: actor
+					]
+			]
+				on: CollisionOcurred
+				do: [ :collision | 
+					self handleCollision: collision.
+					collision resume
+					].
+
+			self checkEndGame
+			]
+		ifFalse: [ player renderOn: aCanvas.
+			ball renderOn: aCanvas.
+			actors do: [ :actor | actor renderOn: aCanvas ]
 			].
-	self checkEndGame
+		
+	self removeActorPendingForRemoval 
 ]
 
 { #category : #Reset }
-ArkanoidGame >> reset [
+Arkanoid >> reset [
 
 	playing := false.
 	self initialize 
 ]
 
 { #category : #Accessing }
-ArkanoidGame >> title [
+Arkanoid >> title [
 
 	^'Arkanoid'
 ]
 
 { #category : #initialization }
-ArkanoidGame >> yellowBrick [
+Arkanoid >> yellowBrick [
 
 	^ assetManager assetNamed: #yellow
 ]

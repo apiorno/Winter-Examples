@@ -18,7 +18,7 @@ Public API and Key Messages:
 "
 Class {
 	#name : #WBAArenaComponent,
-	#superclass : #WinterWidget,
+	#superclass : #BaseWidget,
 	#instVars : [
 		'shift',
 		'negatedShift'

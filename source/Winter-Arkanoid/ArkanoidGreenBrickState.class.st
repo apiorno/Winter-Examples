@@ -16,7 +16,7 @@ Class {
 { #category : #Collisions }
 ArkanoidGreenBrickState >> affectCollisionWithBallTo: anArkanoidBlock in: aGame [
 
-	aGame removeActor: anArkanoidBlock
+	aGame addForRemoval: anArkanoidBlock
 ]
 
 { #category : #Accessing }

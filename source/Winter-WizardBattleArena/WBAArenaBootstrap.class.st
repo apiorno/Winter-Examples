@@ -23,7 +23,7 @@ Class {
 		'characters',
 		'spells',
 		'arena',
-		'startGame'
+		'game'
 	],
 	#category : #'Winter-WizardBattleArena'
 }
@@ -99,24 +99,25 @@ WBAArenaBootstrap >> bootstrapCharacterCell: cell playerIndex: index [
 	character := characters at: index.
 	cell ground: grounds first.
 	cell element: character.
-	( startGame players at: index ) character: character.
+	( game players at: index ) character: character.
 	character cell: cell.
-	character player: ( startGame players at: index ).
+	character player: ( game players at: index ).
 	character spell: ( spells at: index ).
-	character game: startGame
+	character game: game
 ]
 
 { #category : #Bootstraping }
-WBAArenaBootstrap >> bootstrapGame: startingGame on: screen [
+WBAArenaBootstrap >> bootstrapGame: aGame on: screen [
 
 	arena := WBAArena new.
-	startGame := startingGame.
-	screen extent: startingGame gameDescriptor arenaDescriptor windowExtent.
+	game := aGame.
+	screen extent: aGame gameDescriptor arenaDescriptor windowExtent.
 	screen eventHandler: self eventHandler.
-	self loadSprites: startingGame gameDescriptor surface: screen surface.
-	self bootstrapArena: startingGame gameDescriptor arenaDescriptor.
+	self loadSprites: aGame gameDescriptor surface: screen surface.
+	self bootstrapArena: aGame gameDescriptor arenaDescriptor.
 	screen model: arena.
-	arena screen: screen
+	arena screen: screen.
+	game start
 ]
 
 { #category : #Bootstraping }
@@ -138,10 +139,8 @@ WBAArenaBootstrap >> eventHandler [
 
 	| handler |
 
-	handler := BasicEventHandler of: startGame.
-
-	startGame players do: [ :each | handler registerObserver: each ].
-
+	handler := BasicEventHandler of: game.
+	game players do: [ :player | handler registerObserver: player ].
 	^ handler
 ]
 
@@ -149,8 +148,8 @@ WBAArenaBootstrap >> eventHandler [
 WBAArenaBootstrap >> loadDescriptor: descr surface: surface into: class [
 
 	^ class new
-		sprites: ( descr loadSpritesWith: surface using: startGame assetsManager );
-		scheduler: startGame scheduler;
+		sprites: ( descr loadSpritesWith: surface using: game assetsManager );
+		scheduler: game scheduler;
 		yourself
 ]
 
@@ -159,7 +158,7 @@ WBAArenaBootstrap >> loadSprites: gameDescr surface: surface [
 
 	| assetsManager |
 
-	assetsManager := startGame assetsManager.
+	assetsManager := game assetsManager.
 	grounds := gameDescr groundDescriptor loadSpritesWith: surface using: assetsManager.
 	walls := ( gameDescr wallDescriptor loadSpritesWith: surface using: assetsManager )
 		collect: [ :each | 
