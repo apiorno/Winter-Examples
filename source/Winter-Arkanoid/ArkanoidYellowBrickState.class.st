@@ -16,7 +16,7 @@ Class {
 { #category : #Collisions }
 ArkanoidYellowBrickState >> affectCollisionWithBallTo: anArkanoidBlock in: aGame [
 
-	anArkanoidBlock changeColorStateTo: ( ArkanoidGreenBrickState representedWith: game greenBrick )
+	anArkanoidBlock changeColorStateTo: ( ArkanoidGreenBrickState representedWith: aGame greenBrick )
 ]
 
 { #category : #Accessing }
