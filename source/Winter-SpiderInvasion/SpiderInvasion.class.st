@@ -254,7 +254,7 @@ SpiderInvasion >> randomX [
 { #category : #managing }
 SpiderInvasion >> removeActor: anActor [
 
-	actors remove: anActor
+	actors remove: anActor ifAbsent: [  ]
 ]
 
 { #category : #managing }
